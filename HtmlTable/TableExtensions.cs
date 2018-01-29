@@ -23,18 +23,16 @@ namespace HtmlTable
 
             var modelGenericTypeProperties = typeof(T)
                 .GetProperties();
-            var tableHeadings = GetTableHeadings(modelGenericTypeProperties).ToList();
 
-            var table = new TagBuilder("table");
-            var theadingCollection = tableHeadings
+            var theadingCollection = GetTableHeadings(modelGenericTypeProperties)
                 .Select(th => th)
                 .ToList();
             var thead = GetTHead(theadingCollection.Select(th => th.DisplayName ?? string.Empty));
             var tbody = GetTBody(theadingCollection.Select(th => th.PropertyName), rows);
 
+            var table = new TagBuilder("table");
             table.InnerHtml += thead.InnerHtml;
             table.InnerHtml += tbody.InnerHtml;
-
             return new MvcHtmlString(table.ToString(TagRenderMode.Normal));
         }
 
@@ -87,7 +85,7 @@ namespace HtmlTable
                 tr.InnerHtml += th.ToString(TagRenderMode.Normal);
             }
 
-            thead.SetInnerText(tr.InnerHtml);
+            thead.InnerHtml = tr.InnerHtml;
 
             return thead;
         }
