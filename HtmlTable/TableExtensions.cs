@@ -11,22 +11,27 @@ namespace System.Web.Mvc.Html
     {
         public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows)
         {
-            return TableHelper(htmlHelper, rows, null, null);
+            return TableHelper(htmlHelper, rows);
         }
 
         public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id)
         {
-            return TableHelper(htmlHelper, rows, id, null);
+            return TableHelper(htmlHelper, rows, id);
+        }
+
+        public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id, string @class)
+        {
+            return TableHelper(htmlHelper, rows, id, @class);
         }
 
         public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id,
-            IDictionary<string, object> htmlAttributes)
+            string @class, IDictionary<string, object> htmlAttributes)
         {
-            return TableHelper(htmlHelper, rows, id, htmlAttributes);
+            return TableHelper(htmlHelper, rows, id, @class, htmlAttributes);
         }
 
-        private static MvcHtmlString TableHelper<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id,
-            IDictionary<string, object> htmlAttributes)
+        private static MvcHtmlString TableHelper<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id = null,
+            string @class = null, IDictionary<string, object> htmlAttributes = null)
         {
             if (rows == null)
             {
@@ -44,6 +49,7 @@ namespace System.Web.Mvc.Html
 
             var table = new TagBuilder("table");
             table.GenerateId(id);
+            table.AddCssClass(@class);
             table.MergeAttributes(htmlAttributes, true);
             table.InnerHtml += thead.InnerHtml;
             table.InnerHtml += tbody.InnerHtml;

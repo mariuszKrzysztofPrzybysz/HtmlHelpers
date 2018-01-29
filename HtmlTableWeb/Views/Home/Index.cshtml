@@ -4,10 +4,10 @@
     var htmlAttributes = new Dictionary<string, object>
     {
         ["id"] ="customersContainer",
-        ["class"] ="table table-stripped table-hover"
+        ["class"] ="table table-stripped"
     };
 }
 
 <div class="jumbotron">
-    @Html.Table(rows: Model, id: "customersCollection", htmlAttributes: htmlAttributes)
+    @Html.Table(rows: Model, id: "customersCollection", @class: "table table-hover", htmlAttributes: htmlAttributes)
 </div>
