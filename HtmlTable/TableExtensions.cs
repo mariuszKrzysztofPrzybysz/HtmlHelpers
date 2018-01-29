@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using System.Web.Mvc;
 
-namespace HtmlTable
+namespace System.Web.Mvc.Html
 {
     public static class TableExtensions
     {
