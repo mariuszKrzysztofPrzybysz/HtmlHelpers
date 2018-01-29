@@ -4,16 +4,22 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
+// ReSharper disable once CheckNamespace
 namespace System.Web.Mvc.Html
 {
     public static class TableExtensions
     {
         public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows)
         {
-            return TableHelper(htmlHelper, rows);
+            return TableHelper(htmlHelper, rows, null);
         }
 
-        private static MvcHtmlString TableHelper<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows)
+        public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id)
+        {
+            return TableHelper(htmlHelper, rows, id);
+        }
+
+        private static MvcHtmlString TableHelper<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id)
         {
             if (rows == null)
             {
@@ -30,6 +36,7 @@ namespace System.Web.Mvc.Html
             var tbody = GetTBody(theadingCollection.Select(th => th.PropertyName), rows);
 
             var table = new TagBuilder("table");
+            table.GenerateId(id);
             table.InnerHtml += thead.InnerHtml;
             table.InnerHtml += tbody.InnerHtml;
             return new MvcHtmlString(table.ToString(TagRenderMode.Normal));
