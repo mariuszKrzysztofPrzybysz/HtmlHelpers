@@ -11,15 +11,22 @@ namespace System.Web.Mvc.Html
     {
         public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows)
         {
-            return TableHelper(htmlHelper, rows, null);
+            return TableHelper(htmlHelper, rows, null, null);
         }
 
         public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id)
         {
-            return TableHelper(htmlHelper, rows, id);
+            return TableHelper(htmlHelper, rows, id, null);
         }
 
-        private static MvcHtmlString TableHelper<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id)
+        public static MvcHtmlString Table<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id,
+            IDictionary<string, object> htmlAttributes)
+        {
+            return TableHelper(htmlHelper, rows, id, htmlAttributes);
+        }
+
+        private static MvcHtmlString TableHelper<T>(this HtmlHelper htmlHelper, IEnumerable<T> rows, string id,
+            IDictionary<string, object> htmlAttributes)
         {
             if (rows == null)
             {
@@ -37,6 +44,7 @@ namespace System.Web.Mvc.Html
 
             var table = new TagBuilder("table");
             table.GenerateId(id);
+            table.MergeAttributes(htmlAttributes, true);
             table.InnerHtml += thead.InnerHtml;
             table.InnerHtml += tbody.InnerHtml;
             return new MvcHtmlString(table.ToString(TagRenderMode.Normal));

@@ -1,8 +1,13 @@
 ﻿@model IEnumerable<HtmlTableWeb.Dto.CustomerDto>
 @{
     ViewBag.Title = "Home Page";
+    var htmlAttributes = new Dictionary<string, object>
+    {
+        ["id"] ="customersContainer",
+        ["class"] ="table table-stripped table-hover"
+    };
 }
 
 <div class="jumbotron">
-    @Html.Table(rows: Model,id: "customersCollection")
+    @Html.Table(rows: Model, id: "customersCollection", htmlAttributes: htmlAttributes)
 </div>
