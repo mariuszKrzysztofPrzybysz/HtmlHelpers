@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using HtmlTable.Attributes;
 
 // ReSharper disable once CheckNamespace
 namespace System.Web.Mvc.Html
@@ -44,16 +45,30 @@ namespace System.Web.Mvc.Html
             var theadingCollection = GetTableHeadings(modelGenericTypeProperties)
                 .Select(th => th)
                 .ToList();
-            var thead = GetTHead(theadingCollection.Select(th => th.DisplayName ?? string.Empty));
+            
             var tbody = GetTBody(theadingCollection.Select(th => th.PropertyName), rows);
 
             var table = new TagBuilder("table");
             table.GenerateId(id);
             table.AddCssClass(@class);
             table.MergeAttributes(htmlAttributes, true);
-            table.InnerHtml += thead.InnerHtml;
+
+            if (HasHeading(typeof(T)))
+            {
+                var thead = GetTHead(theadingCollection.Select(th => th.DisplayName ?? string.Empty));
+                table.InnerHtml += thead.InnerHtml;
+            }
+            
             table.InnerHtml += tbody.InnerHtml;
             return new MvcHtmlString(table.ToString(TagRenderMode.Normal));
+        }
+
+        private static bool HasHeading(Type t)
+        {
+            var displayTableAttribute = (DisplayTableAttribute) Attribute
+                .GetCustomAttribute(t, typeof(DisplayTableAttribute));
+
+            return displayTableAttribute?.HasHeading ?? false;
         }
 
         private static TagBuilder GetTBody(IEnumerable<string> propertyNames, IEnumerable rows)

@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HtmlTable.Attributes;
 using HtmlTableWeb.Models;
 
 namespace HtmlTableWeb.Dto
 {
+    [DisplayTable(HasHeading = false)]
     public class CustomerDto
     {
         private long _customerId;
