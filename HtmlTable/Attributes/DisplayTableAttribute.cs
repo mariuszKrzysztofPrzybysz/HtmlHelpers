@@ -7,9 +7,12 @@ namespace HtmlTable.Attributes
     {
         public bool HasHeading { get; set; }
 
+        public bool AllowOrderBy { get; set; }
+
         public DisplayTableAttribute()
         {
             HasHeading = true;
+            AllowOrderBy = true;
         }
     }
 }

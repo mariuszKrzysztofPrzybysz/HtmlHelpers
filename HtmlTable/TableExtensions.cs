@@ -46,8 +46,6 @@ namespace System.Web.Mvc.Html
                 .Select(th => th)
                 .ToList();
             
-            var tbody = GetTBody(theadingCollection.Select(th => th.PropertyName), rows);
-
             var table = new TagBuilder("table");
             table.GenerateId(id);
             table.AddCssClass(@class);
@@ -55,12 +53,34 @@ namespace System.Web.Mvc.Html
 
             if (HasHeading(typeof(T)))
             {
-                var thead = GetTHead(theadingCollection.Select(th => th.DisplayName ?? string.Empty));
+                TagBuilder thead;
+                if (AllowOrderBy(typeof(T)))
+                {
+                    var urlHelper = new UrlHelper(htmlHelper.ViewContext.RequestContext);
+                    var controller = htmlHelper.ViewContext.RouteData.Values["controller"].ToString();
+                    var action = htmlHelper.ViewContext.RouteData.Values["action"].ToString();
+                    thead = GetTHead(theadingCollection.Select(th =>
+                        $"<a href={urlHelper.Action(action, controller, new {orderBy = th.PropertyName})}>{th.DisplayName ?? string.Empty}</a>"));
+                }
+                else
+                {
+                    thead = GetTHead(theadingCollection.Select(th => th.DisplayName ?? th.PropertyName));
+                }
+
                 table.InnerHtml += thead.InnerHtml;
             }
-            
+
+            var tbody = GetTBody(theadingCollection.Select(th => th.PropertyName), rows);
             table.InnerHtml += tbody.InnerHtml;
             return new MvcHtmlString(table.ToString(TagRenderMode.Normal));
+        }
+
+        private static bool AllowOrderBy(Type t)
+        {
+            var allowOrderBy = (DisplayTableAttribute) Attribute
+                .GetCustomAttribute(t, typeof(DisplayTableAttribute));
+
+            return allowOrderBy?.AllowOrderBy ?? false;
         }
 
         private static bool HasHeading(Type t)
@@ -115,8 +135,7 @@ namespace System.Web.Mvc.Html
             var tr = new TagBuilder("tr");
             foreach (var tableHeading in tableHeadings)
             {
-                var th = new TagBuilder("th");
-                th.SetInnerText(tableHeading);
+                var th = new TagBuilder("th") {InnerHtml = tableHeading};
                 tr.InnerHtml += th.ToString(TagRenderMode.Normal);
             }
 
